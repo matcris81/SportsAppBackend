@@ -1,0 +1,28 @@
+{
+  "annotations": {
+    "changelogDate": "20240204115857"
+  },
+  "applications": ["footy_fix"],
+  "entityTableName": "venue",
+  "fields": [
+    {
+      "fieldName": "venueName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "address",
+      "fieldType": "String"
+    }
+  ],
+  "name": "Venue",
+  "relationships": [
+    {
+      "otherEntityName": "player",
+      "otherEntityRelationshipName": "venue",
+      "relationshipName": "player",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-many"
+    }
+  ],
+  "searchEngine": "no"
+}

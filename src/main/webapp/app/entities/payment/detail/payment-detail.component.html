@@ -1,0 +1,50 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (payment) {
+      <div>
+        <h2 data-cy="paymentDetailsHeading"><span jhiTranslate="footyFixApp.payment.detail.title">Payment</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ payment.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.payment.amount">Amount</span></dt>
+          <dd>
+            <span>{{ payment.amount }}</span>
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.payment.dateTime">Date Time</span></dt>
+          <dd>
+            <span>{{ payment.dateTime | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.payment.status">Status</span></dt>
+          <dd>
+            <span jhiTranslate="{{ 'footyFixApp.PaymentStatus.' + payment.status }}">{{ payment.status }}</span>
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.payment.player">Player</span></dt>
+          <dd>
+            @if (payment.player) {
+              <div>
+                <a [routerLink]="['/player', payment.player.id, 'view']">{{ payment.player.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/payment', payment.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

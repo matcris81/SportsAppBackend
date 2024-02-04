@@ -1,0 +1,51 @@
+{
+  "annotations": {
+    "changelogDate": "20240204115957"
+  },
+  "applications": ["footy_fix"],
+  "entityTableName": "game",
+  "fields": [
+    {
+      "fieldName": "gameDate",
+      "fieldType": "ZonedDateTime"
+    },
+    {
+      "fieldName": "price",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "size",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "venueId",
+      "fieldType": "Integer"
+    },
+    {
+      "fieldName": "sportId",
+      "fieldType": "Integer"
+    }
+  ],
+  "name": "Game",
+  "relationships": [
+    {
+      "otherEntityName": "player",
+      "otherEntityRelationshipName": "organizedGame",
+      "relationshipName": "organizer",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "player",
+      "otherEntityRelationshipName": "game",
+      "relationshipName": "player",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-many"
+    }
+  ],
+  "searchEngine": "no"
+}

@@ -1,0 +1,10 @@
+{
+  "footyFixApp": {
+    "PaymentStatus": {
+      "null": "",
+      "PENDING": "PENDING",
+      "COMPLETED": "COMPLETED",
+      "FAILED": "FAILED"
+    }
+  }
+}

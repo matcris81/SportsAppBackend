@@ -1,0 +1,9 @@
+{
+  "footyFixApp": {
+    "NotificationStatus": {
+      "null": "",
+      "READ": "READ",
+      "UNREAD": "UNREAD"
+    }
+  }
+}

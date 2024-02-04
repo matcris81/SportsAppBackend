@@ -1,0 +1,62 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (game) {
+      <div>
+        <h2 data-cy="gameDetailsHeading"><span jhiTranslate="footyFixApp.game.detail.title">Game</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ game.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.game.gameDate">Game Date</span></dt>
+          <dd>
+            <span>{{ game.gameDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.game.price">Price</span></dt>
+          <dd>
+            <span>{{ game.price }}</span>
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.game.size">Size</span></dt>
+          <dd>
+            <span>{{ game.size }}</span>
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.game.description">Description</span></dt>
+          <dd>
+            <span>{{ game.description }}</span>
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.game.venueId">Venue Id</span></dt>
+          <dd>
+            <span>{{ game.venueId }}</span>
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.game.sportId">Sport Id</span></dt>
+          <dd>
+            <span>{{ game.sportId }}</span>
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.game.organizer">Organizer</span></dt>
+          <dd>
+            @if (game.organizer) {
+              <div>
+                <a [routerLink]="['/player', game.organizer.id, 'view']">{{ game.organizer.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/game', game.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

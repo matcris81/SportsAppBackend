@@ -1,0 +1,25 @@
+{
+  "annotations": {
+    "changelogDate": "20240204120257"
+  },
+  "applications": ["footy_fix"],
+  "entityTableName": "player_image",
+  "fields": [
+    {
+      "fieldName": "imageData",
+      "fieldType": "byte[]",
+      "fieldTypeBlobContent": "text"
+    }
+  ],
+  "name": "PlayerImage",
+  "relationships": [
+    {
+      "otherEntityName": "player",
+      "otherEntityRelationshipName": "playerImage",
+      "relationshipName": "player",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-one"
+    }
+  ],
+  "searchEngine": "no"
+}

@@ -1,0 +1,36 @@
+{
+  "footyFixApp": {
+    "player": {
+      "home": {
+        "title": "Players",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Player",
+        "createOrEditLabel": "Create or edit a Player",
+        "notFound": "No Players found"
+      },
+      "created": "A new Player is created with identifier {{ param }}",
+      "updated": "A Player is updated with identifier {{ param }}",
+      "deleted": "A Player is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Player {{ id }}?"
+      },
+      "detail": {
+        "title": "Player"
+      },
+      "id": "Id",
+      "name": "Name",
+      "username": "Username",
+      "email": "Email",
+      "password": "Password",
+      "dob": "Dob",
+      "gender": "Gender",
+      "phoneNumber": "Phone Number",
+      "playerImage": "Player Image",
+      "organizedGame": "Organized Game",
+      "notification": "Notification",
+      "payment": "Payment",
+      "game": "Game",
+      "venue": "Venue"
+    }
+  }
+}

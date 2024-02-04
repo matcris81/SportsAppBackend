@@ -1,0 +1,19 @@
+{
+  "generator-jhipster": {
+    "applicationIndex": 0,
+    "applicationType": "monolith",
+    "baseName": "footy_fix",
+    "buildTool": "maven",
+    "devServerPort": 4200,
+    "entities": ["Player", "Sport", "Venue", "Game", "Notification", "Payment", "PlayerImage"],
+    "jhipsterVersion": "8.1.0",
+    "jwtSecretKey": "N2Y2YWQxZTIwNzgzYmNiOTlhZTA1YjAxYTU3OWZhYzA3MzVkYzk1MGZmMTNjZTRjMDMyNGQxZGU2YTg3NjZlNzVhZjJmNWQ2NWMwMzhmYTk4OGJkYzYwZjJjZTZkZjNiNDRkODhkOTU2NzIzYzUxMjg3NzEwNDQwYWNhMDhiMDQ=",
+    "languages": ["en"],
+    "lastLiquibaseTimestamp": 1707048177000,
+    "nativeLanguage": "en",
+    "packageFolder": "org/matcris/footyfix",
+    "packageName": "org.matcris.footyfix",
+    "prodDatabaseType": "postgresql",
+    "serverPort": "4242"
+  }
+}

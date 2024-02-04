@@ -1,0 +1,54 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (notification) {
+      <div>
+        <h2 data-cy="notificationDetailsHeading"><span jhiTranslate="footyFixApp.notification.detail.title">Notification</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ notification.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.notification.type">Type</span></dt>
+          <dd>
+            <span>{{ notification.type }}</span>
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.notification.content">Content</span></dt>
+          <dd>
+            <span>{{ notification.content }}</span>
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.notification.status">Status</span></dt>
+          <dd>
+            <span jhiTranslate="{{ 'footyFixApp.NotificationStatus.' + notification.status }}">{{ notification.status }}</span>
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.notification.creationDate">Creation Date</span></dt>
+          <dd>
+            <span>{{ notification.creationDate | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.notification.player">Player</span></dt>
+          <dd>
+            @if (notification.player) {
+              <div>
+                <a [routerLink]="['/player', notification.player.id, 'view']">{{ notification.player.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/notification', notification.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

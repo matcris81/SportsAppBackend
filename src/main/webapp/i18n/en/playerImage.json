@@ -1,0 +1,25 @@
+{
+  "footyFixApp": {
+    "playerImage": {
+      "home": {
+        "title": "Player Images",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Player Image",
+        "createOrEditLabel": "Create or edit a Player Image",
+        "notFound": "No Player Images found"
+      },
+      "created": "A new Player Image is created with identifier {{ param }}",
+      "updated": "A Player Image is updated with identifier {{ param }}",
+      "deleted": "A Player Image is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Player Image {{ id }}?"
+      },
+      "detail": {
+        "title": "Player Image"
+      },
+      "id": "ID",
+      "imageData": "Image Data",
+      "player": "Player"
+    }
+  }
+}

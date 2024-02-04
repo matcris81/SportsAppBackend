@@ -1,0 +1,84 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (player) {
+      <div>
+        <h2 data-cy="playerDetailsHeading"><span jhiTranslate="footyFixApp.player.detail.title">Player</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="footyFixApp.player.id">Id</span></dt>
+          <dd>
+            <span>{{ player.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.player.name">Name</span></dt>
+          <dd>
+            <span>{{ player.name }}</span>
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.player.username">Username</span></dt>
+          <dd>
+            <span>{{ player.username }}</span>
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.player.email">Email</span></dt>
+          <dd>
+            <span>{{ player.email }}</span>
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.player.password">Password</span></dt>
+          <dd>
+            <span>{{ player.password }}</span>
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.player.dob">Dob</span></dt>
+          <dd>
+            <span>{{ player.dob | formatMediumDate }}</span>
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.player.gender">Gender</span></dt>
+          <dd>
+            <span jhiTranslate="{{ 'footyFixApp.Gender.' + player.gender }}">{{ player.gender }}</span>
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.player.phoneNumber">Phone Number</span></dt>
+          <dd>
+            <span>{{ player.phoneNumber }}</span>
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.player.playerImage">Player Image</span></dt>
+          <dd>
+            @if (player.playerImage) {
+              <div>
+                <a [routerLink]="['/player-image', player.playerImage.id, 'view']">{{ player.playerImage.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.player.game">Game</span></dt>
+          <dd>
+            @for (game of player.games; track $index; let last = $last) {
+              <span>
+                <a [routerLink]="['/game', game.id, 'view']">{{ game.id }}</a
+                >{{ last ? '' : ', ' }}
+              </span>
+            }
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.player.venue">Venue</span></dt>
+          <dd>
+            @for (venue of player.venues; track $index; let last = $last) {
+              <span>
+                <a [routerLink]="['/venue', venue.id, 'view']">{{ venue.id }}</a
+                >{{ last ? '' : ', ' }}
+              </span>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/player', player.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

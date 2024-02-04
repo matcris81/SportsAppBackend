@@ -1,0 +1,38 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (venue) {
+      <div>
+        <h2 data-cy="venueDetailsHeading"><span jhiTranslate="footyFixApp.venue.detail.title">Venue</span></h2>
+
+        <hr />
+
+        <jhi-alert-error></jhi-alert-error>
+
+        <jhi-alert></jhi-alert>
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ venue.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.venue.venueName">Venue Name</span></dt>
+          <dd>
+            <span>{{ venue.venueName }}</span>
+          </dd>
+          <dt><span jhiTranslate="footyFixApp.venue.address">Address</span></dt>
+          <dd>
+            <span>{{ venue.address }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+        </button>
+
+        <button type="button" [routerLink]="['/venue', venue.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

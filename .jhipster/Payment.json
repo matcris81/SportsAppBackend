@@ -1,0 +1,33 @@
+{
+  "annotations": {
+    "changelogDate": "20240204120157"
+  },
+  "applications": ["footy_fix"],
+  "entityTableName": "payment",
+  "fields": [
+    {
+      "fieldName": "amount",
+      "fieldType": "BigDecimal"
+    },
+    {
+      "fieldName": "dateTime",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "PaymentStatus",
+      "fieldValues": "PENDING,COMPLETED,FAILED"
+    }
+  ],
+  "name": "Payment",
+  "relationships": [
+    {
+      "otherEntityName": "player",
+      "otherEntityRelationshipName": "payment",
+      "relationshipName": "player",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no"
+}

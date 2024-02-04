@@ -1,0 +1,100 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-game-heading" data-cy="GameCreateUpdateHeading" jhiTranslate="footyFixApp.game.home.createOrEditLabel">
+        Create or edit a Game
+      </h2>
+
+      <div>
+        <jhi-alert-error></jhi-alert-error>
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" jhiTranslate="global.field.id" for="field_id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="footyFixApp.game.gameDate" for="field_gameDate">Game Date</label>
+          <div class="d-flex">
+            <input
+              id="field_gameDate"
+              data-cy="gameDate"
+              type="datetime-local"
+              class="form-control"
+              name="gameDate"
+              formControlName="gameDate"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="footyFixApp.game.price" for="field_price">Price</label>
+          <input type="number" class="form-control" name="price" id="field_price" data-cy="price" formControlName="price" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="footyFixApp.game.size" for="field_size">Size</label>
+          <input type="number" class="form-control" name="size" id="field_size" data-cy="size" formControlName="size" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="footyFixApp.game.description" for="field_description">Description</label>
+          <input
+            type="text"
+            class="form-control"
+            name="description"
+            id="field_description"
+            data-cy="description"
+            formControlName="description"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="footyFixApp.game.venueId" for="field_venueId">Venue Id</label>
+          <input type="number" class="form-control" name="venueId" id="field_venueId" data-cy="venueId" formControlName="venueId" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="footyFixApp.game.sportId" for="field_sportId">Sport Id</label>
+          <input type="number" class="form-control" name="sportId" id="field_sportId" data-cy="sportId" formControlName="sportId" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" jhiTranslate="footyFixApp.game.organizer" for="field_organizer">Organizer</label>
+          <select
+            class="form-control"
+            id="field_organizer"
+            data-cy="organizer"
+            name="organizer"
+            formControlName="organizer"
+            [compareWith]="comparePlayer"
+          >
+            <option [ngValue]="null"></option>
+            @for (playerOption of playersSharedCollection; track $index) {
+              <option [ngValue]="playerOption">{{ playerOption.id }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

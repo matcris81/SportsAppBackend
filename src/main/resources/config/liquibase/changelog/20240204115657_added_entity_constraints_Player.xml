@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <!--
+        Added the constraints for entity Player.
+    -->
+    <changeSet id="20240204115657-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="player_image_id"
+                                 baseTableName="player"
+                                 constraintName="fk_player__player_image_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="player_image"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="player_id"
+                                 baseTableName="rel_player__game"
+                                 constraintName="fk_rel_player__game__player_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="player"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="game_id"
+                                 baseTableName="rel_player__game"
+                                 constraintName="fk_rel_player__game__game_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="game"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="player_id"
+                                 baseTableName="rel_player__venue"
+                                 constraintName="fk_rel_player__venue__player_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="player"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="venue_id"
+                                 baseTableName="rel_player__venue"
+                                 constraintName="fk_rel_player__venue__venue_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="venue"
+                                 />
+    </changeSet>
+</databaseChangeLog>

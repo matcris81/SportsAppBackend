@@ -1,0 +1,17 @@
+{
+  "annotations": {
+    "changelogDate": "20240204115757"
+  },
+  "applications": ["footy_fix"],
+  "entityTableName": "sport",
+  "fields": [
+    {
+      "fieldName": "sportName",
+      "fieldType": "String",
+      "fieldValidateRules": ["required", "unique"]
+    }
+  ],
+  "name": "Sport",
+  "relationships": [],
+  "searchEngine": "no"
+}

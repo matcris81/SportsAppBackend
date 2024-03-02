@@ -211,3 +211,7 @@ jhipster:
 # ===================================================================
 
 # application:
+# Firebase configuration
+gcp:
+  firebase:
+    service-account: classpath:firebase-service-account.json

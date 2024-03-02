@@ -1,5 +1,6 @@
 package org.matcris.footyfix.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -23,7 +24,7 @@ public class Player implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue
+    //    @GeneratedValue
     @Column(name = "id")
     private String id;
 
@@ -55,23 +56,23 @@ public class Player implements Serializable {
     private PlayerImage playerImage;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "organizer")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    //    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "organizer", "players" }, allowSetters = true)
     private Set<Game> organizedGames = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "player")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    //    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "player" }, allowSetters = true)
     private Set<Notification> notifications = new HashSet<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "player")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    //    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "player" }, allowSetters = true)
     private Set<Payment> payments = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "rel_player__game", joinColumns = @JoinColumn(name = "player_id"), inverseJoinColumns = @JoinColumn(name = "game_id"))
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    //    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "organizer", "players" }, allowSetters = true)
     private Set<Game> games = new HashSet<>();
 
@@ -81,11 +82,35 @@ public class Player implements Serializable {
         joinColumns = @JoinColumn(name = "player_id"),
         inverseJoinColumns = @JoinColumn(name = "venue_id")
     )
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    //    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "players" }, allowSetters = true)
     private Set<Venue> venues = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
+
+    @JsonIgnore
+    public Game getGame() {
+        if (this.games != null && !this.games.isEmpty()) {
+            return this.games.iterator().next();
+        }
+        return null;
+    }
+
+    @JsonIgnore
+    public Venue getVenue() {
+        if (this.venues != null && !this.venues.isEmpty()) {
+            return this.venues.iterator().next();
+        }
+        return null;
+    }
+
+    @JsonIgnore
+    public Payment getPayment() {
+        if (this.payments != null && !this.payments.isEmpty()) {
+            return this.payments.iterator().next();
+        }
+        return null;
+    }
 
     public String getId() {
         return this.id;

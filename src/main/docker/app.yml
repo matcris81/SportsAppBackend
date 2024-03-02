@@ -10,7 +10,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/footy_fix
       - SPRING_LIQUIBASE_URL=jdbc:postgresql://postgresql:5432/footy_fix
     ports:
-      - 127.0.0.1:4242:4242
+      - 0.0.0.0:4242:4242
     healthcheck:
       test:
         - CMD

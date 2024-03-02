@@ -165,6 +165,13 @@ public class PaymentResource {
         return ResponseUtil.wrapOrNotFound(payment);
     }
 
+    @GetMapping("/user-purchases/{id}")
+    public ResponseEntity<List<Payment>> getUsersPayments(@PathVariable("id") String id) {
+        log.debug("REST request to get Payment : {}", id);
+        List<Payment> payment = paymentRepository.findByPlayerId(id);
+        return ResponseEntity.ok().body(payment);
+    }
+
     /**
      * {@code DELETE  /payments/:id} : delete the "id" payment.
      *

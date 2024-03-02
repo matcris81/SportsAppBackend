@@ -32,7 +32,7 @@ public class Venue implements Serializable {
     private String address;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "venues")
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+    //    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "playerImage", "organizedGames", "notifications", "payments", "games", "venues" }, allowSetters = true)
     private Set<Player> players = new HashSet<>();
 

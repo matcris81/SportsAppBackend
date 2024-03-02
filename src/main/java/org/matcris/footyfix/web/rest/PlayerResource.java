@@ -1,5 +1,6 @@
 package org.matcris.footyfix.web.rest;
 
+//import com.google.firebase.messaging.FirebaseMessaging;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.net.URI;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.matcris.footyfix.domain.Player;
+import org.matcris.footyfix.domain.Venue;
 import org.matcris.footyfix.repository.PlayerRepository;
 import org.matcris.footyfix.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
@@ -36,8 +38,14 @@ public class PlayerResource {
 
     private final PlayerRepository playerRepository;
 
-    public PlayerResource(PlayerRepository playerRepository) {
+    //    private final FirebaseMessaging firebaseMessaging;
+
+    public PlayerResource(
+        PlayerRepository playerRepository
+        //        , FirebaseMessaging firebaseMessaging
+    ) {
         this.playerRepository = playerRepository;
+        //        this.firebaseMessaging = firebaseMessaging;
     }
 
     /**
@@ -50,9 +58,6 @@ public class PlayerResource {
     @PostMapping("")
     public ResponseEntity<Player> createPlayer(@Valid @RequestBody Player player) throws URISyntaxException {
         log.debug("REST request to save Player : {}", player);
-        if (player.getId() != null) {
-            throw new BadRequestAlertException("A new player cannot already have an ID", ENTITY_NAME, "idexists");
-        }
         Player result = playerRepository.save(player);
         return ResponseEntity
             .created(new URI("/api/players/" + result.getId()))
@@ -125,9 +130,6 @@ public class PlayerResource {
         Optional<Player> result = playerRepository
             .findById(player.getId())
             .map(existingPlayer -> {
-                if (player.getName() != null) {
-                    existingPlayer.setName(player.getName());
-                }
                 if (player.getUsername() != null) {
                     existingPlayer.setUsername(player.getUsername());
                 }
@@ -137,6 +139,18 @@ public class PlayerResource {
                 if (player.getPassword() != null) {
                     existingPlayer.setPassword(player.getPassword());
                 }
+                if (player.getVenues() != null && !player.getVenues().isEmpty()) {
+                    existingPlayer.addVenue(player.getVenue());
+                }
+                if (player.getGames() != null && !player.getGames().isEmpty()) {
+                    existingPlayer.addGame(player.getGame());
+                }
+                if (player.getPayments() != null && !player.getPayments().isEmpty()) {
+                    existingPlayer.addPayment(player.getPayment());
+                }
+                if (player.getPlayerImage() != null) {
+                    existingPlayer.setPlayerImage(player.getPlayerImage());
+                }
                 if (player.getDob() != null) {
                     existingPlayer.setDob(player.getDob());
                 }
@@ -145,6 +159,42 @@ public class PlayerResource {
                 }
                 if (player.getPhoneNumber() != null) {
                     existingPlayer.setPhoneNumber(player.getPhoneNumber());
+                }
+
+                return existingPlayer;
+            })
+            .map(playerRepository::save);
+
+        return ResponseUtil.wrapOrNotFound(result, HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, player.getId()));
+    }
+
+    @PatchMapping(value = "/remove/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    public ResponseEntity<Player> removeFromPlayer(
+        @PathVariable(value = "id", required = false) final String id,
+        @NotNull @RequestBody Player player
+    ) throws URISyntaxException {
+        log.debug("REST request to partial update Player partially : {}, {}", id, player);
+        if (player.getId() == null) {
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+        }
+        if (!Objects.equals(id, player.getId())) {
+            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+        }
+
+        if (!playerRepository.existsById(id)) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+
+        Optional<Player> result = playerRepository
+            .findById(player.getId())
+            .map(existingPlayer -> {
+                if (player.getVenues() != null && !player.getVenues().isEmpty()) {
+                    existingPlayer.removeVenue(player.getVenue());
+                    // remove subscription for venue
+                }
+                if (player.getGames() != null && !player.getGames().isEmpty()) {
+                    existingPlayer.removeGame(player.getGame());
+                    // remove subscription for game
                 }
 
                 return existingPlayer;
@@ -181,6 +231,19 @@ public class PlayerResource {
         log.debug("REST request to get Player : {}", id);
         Optional<Player> player = playerRepository.findOneWithEagerRelationships(id);
         return ResponseUtil.wrapOrNotFound(player);
+    }
+
+    @GetMapping("/{playerId}/likes-venue/{venueId}")
+    public ResponseEntity<Boolean> checkPlayerLikesVenue(@PathVariable String playerId, @PathVariable Long venueId) {
+        boolean result = playerRepository.existsByPlayerIdAndVenueId(playerId, venueId);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/{id}/venues")
+    public ResponseEntity<List<Venue>> getAllVenuesLikedByPlayer(@PathVariable("id") String id) {
+        log.debug("REST request to get all Venues liked by Player : {}", id);
+        List<Venue> venues = playerRepository.findVenuesByPlayerId(id);
+        return ResponseEntity.ok().body(venues);
     }
 
     /**

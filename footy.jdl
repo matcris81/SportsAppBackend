@@ -1,0 +1,45 @@
+//jhipster jdl --skip-client  ../footy.jdl
+application {
+  config {
+    baseName footy_fix
+    applicationType monolith
+    serverPort 4242
+    buildTool maven
+    prodDatabaseType postgresql
+    packageName org.matcris.footyfix
+  }
+  entities *
+}
+
+entity Player {
+  username String required unique
+  email String required unique
+  password String required
+}
+
+entity Sport {
+  sportName String required unique
+}
+
+entity Venue {
+  venueName String required
+  address String required
+}
+
+entity Game {
+  gameDate ZonedDateTime required
+  startTime Instant
+  price BigDecimal required
+  size Integer
+  description String required
+}
+
+relationship ManyToOne {
+  Game{sport} to Sport
+  Game{venue required} to Venue
+}
+
+//relationship ManyToMany {
+//  Game{player} to Player{game}
+//  Venue{player} to Player{venue}
+//}

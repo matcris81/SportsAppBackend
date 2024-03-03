@@ -252,6 +252,13 @@ public class GameResource {
         return ResponseEntity.ok().body(players);
     }
 
+    // In your @RestController class
+    @GetMapping("/{gameId}/check-player/{userId}")
+    public ResponseEntity<Boolean> checkPlayerInGame(@PathVariable Long gameId, @PathVariable String userId) {
+        boolean playerExists = gameRepository.existsByGameIdAndUserId(gameId, userId);
+        return ResponseEntity.ok().body(playerExists);
+    }
+
     /**
      * {@code DELETE  /games/:id} : delete the "id" game.
      *

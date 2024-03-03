@@ -31,4 +31,8 @@ public interface GameRepository extends JpaRepository<Game, Long> {
 
     @Query("SELECT DISTINCT p FROM Game g JOIN g.players p WHERE g.id = :gameId")
     List<Player> findPlayersByGameId(@Param("gameId") Long gameId);
+
+    // In GameRepository.java
+    @Query("SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END FROM Game g JOIN g.players p WHERE g.id = :gameId AND p.id = :userId")
+    boolean existsByGameIdAndUserId(@Param("gameId") Long gameId, @Param("userId") String userId);
 }

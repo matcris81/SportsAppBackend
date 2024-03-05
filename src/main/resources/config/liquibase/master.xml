@@ -23,6 +23,8 @@
     <include file="config/liquibase/changelog/20240204115957_added_entity_constraints_Game.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20240204120057_added_entity_constraints_Notification.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20240204120157_added_entity_constraints_Payment.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20240305000000_march5th_changes.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20240305000000_march5th_changes2.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
     <!-- jhipster-needle-liquibase-add-incremental-changelog - JHipster will add incremental liquibase changelogs here -->
 </databaseChangeLog>

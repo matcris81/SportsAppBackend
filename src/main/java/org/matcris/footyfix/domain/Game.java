@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -36,6 +37,7 @@ public class Game implements Serializable {
     @Column(name = "size")
     private Integer size;
 
+    @Lob
     @Column(name = "description")
     private String description;
 
@@ -44,6 +46,9 @@ public class Game implements Serializable {
 
     @Column(name = "sport_id")
     private Integer sportId;
+
+    @Column(name = "fake_players")
+    private Integer fakePlayers;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "playerImage", "organizedGames", "notifications", "payments", "games", "venues" }, allowSetters = true)
@@ -55,6 +60,14 @@ public class Game implements Serializable {
     private Set<Player> players = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
+
+    public void setFakePlayers(Integer fakePlayersCount) {
+        this.fakePlayers = fakePlayersCount;
+    }
+
+    public Integer getFakePlayers() {
+        return fakePlayers;
+    }
 
     public Long getId() {
         return this.id;
@@ -221,6 +234,8 @@ public class Game implements Serializable {
             ", description='" + getDescription() + "'" +
             ", venueId=" + getVenueId() +
             ", sportId=" + getSportId() +
+            ", sportId=" + getSportId() +
+            ", fakePlayers=" + getFakePlayers() +
             "}";
     }
 }

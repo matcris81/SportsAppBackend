@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -31,12 +32,34 @@ public class Venue implements Serializable {
     @Column(name = "address")
     private String address;
 
+    @Lob
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "image_id")
+    private UUID imageId; // Use the UUID type for the image_id
+
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "venues")
-    //    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     @JsonIgnoreProperties(value = { "playerImage", "organizedGames", "notifications", "payments", "games", "venues" }, allowSetters = true)
     private Set<Player> players = new HashSet<>();
 
+    // Getter and setter for imageId
+    public UUID getImageId() {
+        return imageId;
+    }
+
+    public void setImageId(UUID imageId) {
+        this.imageId = imageId;
+    }
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public Long getId() {
         return this.id;

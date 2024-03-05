@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="add-fake-players" author="matei">
+        <addColumn tableName="game">
+            <column name="fake_players" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-description-venue" author="matei">
+        <addColumn tableName="venue">
+            <column name="description" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="create_images_table" author="matei">
+        <createTable tableName="images">
+            <column name="image_id" type="INT">
+                <constraints primaryKey="true" primaryKeyName="image_pk"/>
+            </column>
+            <column name="image_data" type="text"/>
+            <column name="image_type" type="varchar(255)"/>
+        </createTable>
+    </changeSet>
+
+    <!-- Add image_id column to venue table -->
+    <changeSet id="add_image_fk_to_venue" author="matei">
+        <addColumn tableName="venue">
+            <column name="image_id" type="INT"/>
+        </addColumn>
+        <addForeignKeyConstraint constraintName="fk_venue_image_id"
+                                 baseTableName="venue" baseColumnNames="image_id"
+                                 referencedTableName="images" referencedColumnNames="image_id"/>
+    </changeSet>
+
+    <!-- Add image_id column to sport table -->
+    <changeSet id="add_image_fk_to_sport" author="matei">
+        <addColumn tableName="sport">
+            <column name="image_id" type="INT"/>
+        </addColumn>
+        <addForeignKeyConstraint constraintName="fk_sport_image_id"
+                                 baseTableName="sport" baseColumnNames="image_id"
+                                 referencedTableName="images" referencedColumnNames="image_id"/>
+    </changeSet>
+
+    <changeSet id="add-description-game" author="matei">
+        <modifyDataType tableName="game" columnName="description" newDataType="TEXT"/>
+    </changeSet>
+</databaseChangeLog>

@@ -3,7 +3,6 @@ package org.matcris.footyfix.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
-import java.util.UUID;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -29,15 +28,15 @@ public class Sport implements Serializable {
     private String sportName;
 
     @Column(name = "image_id")
-    private UUID imageId; // Use the UUID type for the image_id
+    private Long imageId;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
-    public UUID getImageId() {
+    public Long getImageId() {
         return imageId;
     }
 
-    public void setImageId(UUID imageId) {
+    public void setImageId(Long imageId) {
         this.imageId = imageId;
     }
 

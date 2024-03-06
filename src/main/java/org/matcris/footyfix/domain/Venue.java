@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -37,18 +36,18 @@ public class Venue implements Serializable {
     private String description;
 
     @Column(name = "image_id")
-    private UUID imageId; // Use the UUID type for the image_id
+    private Long imageId;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "venues")
     @JsonIgnoreProperties(value = { "playerImage", "organizedGames", "notifications", "payments", "games", "venues" }, allowSetters = true)
     private Set<Player> players = new HashSet<>();
 
     // Getter and setter for imageId
-    public UUID getImageId() {
+    public Long getImageId() {
         return imageId;
     }
 
-    public void setImageId(UUID imageId) {
+    public void setImageId(Long imageId) {
         this.imageId = imageId;
     }
 

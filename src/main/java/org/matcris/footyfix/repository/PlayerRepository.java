@@ -1,5 +1,6 @@
 package org.matcris.footyfix.repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import org.matcris.footyfix.domain.Player;
@@ -35,4 +36,7 @@ public interface PlayerRepository extends PlayerRepositoryWithBagRelationships, 
 
     @Query("SELECT v FROM Venue v JOIN v.players p WHERE p.id = :playerId")
     List<Venue> findVenuesByPlayerId(@Param("playerId") String playerId);
+
+    @Query("SELECT p.balance FROM Player p WHERE p.id = :playerId")
+    BigDecimal findBalanceByPlayerId(@Param("playerId") String playerId);
 }

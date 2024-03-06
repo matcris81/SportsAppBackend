@@ -3,6 +3,7 @@ package org.matcris.footyfix.web.rest;
 //import com.google.firebase.messaging.FirebaseMessaging;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -160,6 +161,10 @@ public class PlayerResource {
                 if (player.getPhoneNumber() != null) {
                     existingPlayer.setPhoneNumber(player.getPhoneNumber());
                 }
+                if (player.getBalance() != null) {
+                    BigDecimal newBalance = existingPlayer.getBalance().add(player.getBalance());
+                    existingPlayer.setBalance(newBalance);
+                }
 
                 return existingPlayer;
             })
@@ -244,6 +249,13 @@ public class PlayerResource {
         log.debug("REST request to get all Venues liked by Player : {}", id);
         List<Venue> venues = playerRepository.findVenuesByPlayerId(id);
         return ResponseEntity.ok().body(venues);
+    }
+
+    @GetMapping("/{id}/balance")
+    public ResponseEntity<BigDecimal> getUserBalance(@PathVariable("id") String id) {
+        log.debug("REST request to get all Venues liked by Player : {}", id);
+        BigDecimal balance = playerRepository.findBalanceByPlayerId(id);
+        return ResponseEntity.ok(balance);
     }
 
     /**

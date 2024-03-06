@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
@@ -50,6 +51,9 @@ public class Player implements Serializable {
     @Column(name = "phone_number")
     private String phoneNumber;
 
+    @Column(name = "balance", precision = 10, scale = 2)
+    private BigDecimal balance;
+
     @JsonIgnoreProperties(value = { "player" }, allowSetters = true)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(unique = true)
@@ -87,6 +91,14 @@ public class Player implements Serializable {
     private Set<Venue> venues = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
 
     @JsonIgnore
     public Game getGame() {
@@ -399,6 +411,7 @@ public class Player implements Serializable {
             ", dob='" + getDob() + "'" +
             ", gender='" + getGender() + "'" +
             ", phoneNumber='" + getPhoneNumber() + "'" +
+            ", balance='" + getBalance() + "'" +
             "}";
     }
 }

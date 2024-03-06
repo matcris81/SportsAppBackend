@@ -14,6 +14,14 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="add-balance-player" author="matei">
+        <addColumn tableName="player">
+            <column name="balance" type="NUMERIC">
+                <constraints nullable="true"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
     <changeSet id="add-description-venue" author="matei">
         <addColumn tableName="venue">
             <column name="description" type="TEXT">

@@ -125,6 +125,9 @@ public class VenueResource {
                 if (venue.getAddress() != null) {
                     existingVenue.setAddress(venue.getAddress());
                 }
+                if (venue.getImageId() != null) {
+                    existingVenue.setImageId(venue.getImageId());
+                }
 
                 return existingVenue;
             })

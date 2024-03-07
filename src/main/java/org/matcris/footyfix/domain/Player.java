@@ -52,7 +52,7 @@ public class Player implements Serializable {
     private String phoneNumber;
 
     @Column(name = "balance", precision = 10, scale = 2)
-    private BigDecimal balance;
+    private BigDecimal balance = BigDecimal.ZERO;
 
     @JsonIgnoreProperties(value = { "player" }, allowSetters = true)
     @OneToOne(fetch = FetchType.LAZY)

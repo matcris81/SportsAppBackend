@@ -1,5 +1,6 @@
 package org.matcris.footyfix.repository;
 
+import jakarta.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -39,4 +40,9 @@ public interface PlayerRepository extends PlayerRepositoryWithBagRelationships, 
 
     @Query("SELECT p.balance FROM Player p WHERE p.id = :playerId")
     BigDecimal findBalanceByPlayerId(@Param("playerId") String playerId);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Player p SET p.balance = p.balance - :amount WHERE p.id = :playerId")
+    int updatePlayerBalance(@Param("playerId") String playerId, @Param("amount") BigDecimal amount);
 }

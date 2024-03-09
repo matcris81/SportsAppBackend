@@ -161,10 +161,6 @@ public class PlayerResource {
                 if (player.getPhoneNumber() != null) {
                     existingPlayer.setPhoneNumber(player.getPhoneNumber());
                 }
-                if (player.getBalance() != null) {
-                    BigDecimal newBalance = existingPlayer.getBalance().add(player.getBalance());
-                    existingPlayer.setBalance(newBalance);
-                }
 
                 return existingPlayer;
             })
@@ -207,6 +203,16 @@ public class PlayerResource {
             .map(playerRepository::save);
 
         return ResponseUtil.wrapOrNotFound(result, HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, player.getId()));
+    }
+
+    @PatchMapping("/{id}/balance")
+    public ResponseEntity<String> updateBalance(@PathVariable("id") String id, @RequestBody BigDecimal amount) {
+        int updatedRows = playerRepository.updatePlayerBalance(id, amount);
+        if (updatedRows > 0) {
+            return ResponseEntity.ok().body("Player balance updated successfully.");
+        } else {
+            return ResponseEntity.badRequest().body("Failed to update player balance.");
+        }
     }
 
     /**

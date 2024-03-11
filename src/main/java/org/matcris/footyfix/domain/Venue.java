@@ -38,11 +38,23 @@ public class Venue implements Serializable {
     @Column(name = "image_id")
     private Long imageId;
 
+    @Column(name = "creator_id")
+    private String creatorId;
+
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "venues")
     @JsonIgnoreProperties(value = { "playerImage", "organizedGames", "notifications", "payments", "games", "venues" }, allowSetters = true)
     private Set<Player> players = new HashSet<>();
 
     // Getter and setter for imageId
+
+    public String getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(String creatorId) {
+        this.creatorId = creatorId;
+    }
+
     public Long getImageId() {
         return imageId;
     }
@@ -156,6 +168,7 @@ public class Venue implements Serializable {
             "id=" + getId() +
             ", venueName='" + getVenueName() + "'" +
             ", address='" + getAddress() + "'" +
+            ", creatorId='" + getCreatorId() + "'" +
             "}";
     }
 }

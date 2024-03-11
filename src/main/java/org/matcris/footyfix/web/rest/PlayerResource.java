@@ -205,9 +205,19 @@ public class PlayerResource {
         return ResponseUtil.wrapOrNotFound(result, HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, player.getId()));
     }
 
-    @PatchMapping("/{id}/balance")
-    public ResponseEntity<String> updateBalance(@PathVariable("id") String id, @RequestBody BigDecimal amount) {
-        int updatedRows = playerRepository.updatePlayerBalance(id, amount);
+    @PatchMapping("/{id}/subtract-balance")
+    public ResponseEntity<String> subtractBalance(@PathVariable("id") String id, @RequestBody BigDecimal amount) {
+        int updatedRows = playerRepository.subtractPlayerBalance(id, amount);
+        if (updatedRows > 0) {
+            return ResponseEntity.ok().body("Player balance updated successfully.");
+        } else {
+            return ResponseEntity.badRequest().body("Failed to update player balance.");
+        }
+    }
+
+    @PatchMapping("/{id}/add-balance")
+    public ResponseEntity<String> addBalance(@PathVariable("id") String id, @RequestBody BigDecimal amount) {
+        int updatedRows = playerRepository.addPlayerBalance(id, amount);
         if (updatedRows > 0) {
             return ResponseEntity.ok().body("Player balance updated successfully.");
         } else {

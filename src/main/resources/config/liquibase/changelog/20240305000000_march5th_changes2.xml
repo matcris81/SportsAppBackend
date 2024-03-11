@@ -10,4 +10,15 @@
         <sql>ALTER TABLE venue ALTER COLUMN description DROP NOT NULL;</sql>
     </changeSet>
 
+    <changeSet id="add-creator-to-venues" author="matei">
+        <addColumn tableName="venue">
+            <column name="creator_id" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addForeignKeyConstraint constraintName="fk_venue_creator_id"
+                                 baseTableName="venue" baseColumnNames="creator_id"
+                                 referencedTableName="player" referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+    </changeSet>
 </databaseChangeLog>

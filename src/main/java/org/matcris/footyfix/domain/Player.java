@@ -110,21 +110,6 @@ public class Player implements Serializable {
         SecureRandom random = new SecureRandom();
         int randomInt = random.nextInt(2) + 1;
 
-        //        if (randomInt == 1) {
-        //            String uuid = UUID.randomUUID().toString();
-        //            username = "user_" + uuid.substring(0, 8);
-        //        }
-        //        else if (randomInt == 2) {
-        //            int length = 10;
-        //            String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        //
-        //            StringBuilder sb = new StringBuilder();
-        //            for (int i = 0; i < length; i++) {
-        //                sb.append(characters.charAt(random.nextInt(characters.length())));
-        //            }
-        //
-        //            username = sb.toString();
-        //        }
         if (randomInt == 2) {
             String base = faker.superhero().name().replaceAll("\\s+", ""); // Remove spaces
             String uniqueSegment = UUID.randomUUID().toString().substring(0, 4); // Get a UUID segment
@@ -136,22 +121,6 @@ public class Player implements Serializable {
 
         return username;
     }
-
-    //    public String getRandomCityImage() {
-    //        final String url = "https://api.api-ninjas.com/v1/randomimage?category=city";
-    //
-    //        RestTemplate restTemplate = new RestTemplate();
-    //
-    //        HttpHeaders headers = new HttpHeaders();
-    //        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-    //        headers.set("X-Api-Key", "bbT1V2Ic3kanPcd3cf41zA==23X3WsTG0yTutohn"); // Replace with your actual API key
-    //
-    //        HttpEntity<String> entity = new HttpEntity<>(headers);
-    //
-    //        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-    //
-    //        return response.getBody(); // This returns the raw JSON response
-    //    }
 
     public Player generateFakePlayer() {
         Faker faker = new Faker();

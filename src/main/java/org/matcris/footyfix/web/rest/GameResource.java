@@ -7,20 +7,27 @@ import com.google.firebase.messaging.Notification;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import org.matcris.footyfix.domain.Game;
 import org.matcris.footyfix.domain.Player;
-import org.matcris.footyfix.domain.Venue;
+import org.matcris.footyfix.domain.PlayerImage;
 import org.matcris.footyfix.repository.GameRepository;
-import org.matcris.footyfix.repository.VenueRepository;
+import org.matcris.footyfix.repository.PlayerImageRepository;
+import org.matcris.footyfix.repository.PlayerRepository;
 import org.matcris.footyfix.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
@@ -32,6 +39,11 @@ import tech.jhipster.web.util.ResponseUtil;
 @Transactional
 public class GameResource {
 
+    LocalDate now = LocalDate.now();
+    ZonedDateTime nowZoned = now.atStartOfDay(ZoneId.systemDefault());
+    ZonedDateTime oneWeekFromNow = nowZoned.plusWeeks(1);
+    ZonedDateTime twentyFourHoursFromNow = nowZoned.plusDays(1);
+
     private final Logger log = LoggerFactory.getLogger(GameResource.class);
 
     private static final String ENTITY_NAME = "game";
@@ -41,10 +53,116 @@ public class GameResource {
 
     private final GameRepository gameRepository;
     private final FirebaseMessaging firebaseMessaging;
+    private final PlayerImageRepository playerImageRepository;
+    private final PlayerRepository playerRepository;
 
-    public GameResource(GameRepository gameRepository, FirebaseMessaging firebaseMessaging) {
+    public GameResource(
+        GameRepository gameRepository,
+        FirebaseMessaging firebaseMessaging,
+        PlayerRepository playerRepository,
+        PlayerImageRepository playerImageRepository
+    ) {
         this.gameRepository = gameRepository;
         this.firebaseMessaging = firebaseMessaging;
+        this.playerRepository = playerRepository;
+        this.playerImageRepository = playerImageRepository;
+    }
+
+    public String fetchImageAndEncode() {
+        byte[] imageBytes = fetchImage();
+        return Base64.getEncoder().encodeToString(imageBytes);
+    }
+
+    public PlayerImage saveImageToDatabaseAndReturnId() {
+        String encodedImage = fetchImageAndEncode();
+
+        PlayerImage playerImage = new PlayerImage();
+        playerImage.setImageData(encodedImage);
+        playerImage = playerImageRepository.save(playerImage);
+
+        return playerImage;
+    }
+
+    public byte[] fetchImage() {
+        String[] categories = { "nature", "city", "technology", "food", "still_life", "abstract", "wildlife" };
+        int width = 100;
+        int height = 100;
+        Random random = new Random();
+        int randIndex = random.nextInt(categories.length);
+
+        String category = categories[randIndex];
+        final String url = "https://api.api-ninjas.com/v1/randomimage?category={category}&width={width}&height={height}";
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Collections.singletonList(MediaType.IMAGE_JPEG));
+        headers.set("X-Api-Key", "bbT1V2Ic3kanPcd3cf41zA==23X3WsTG0yTutohn");
+
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        ResponseEntity<byte[]> response = restTemplate.exchange(url, HttpMethod.GET, entity, byte[].class, category, width, height);
+
+        return response.getBody();
+    }
+
+    //    @Scheduled(cron = "0 0 * * * *") // Run at the start of every hour
+    //@Scheduled(cron = "0 0/5 * * * ?") // Runs every 5 minutes
+    @Scheduled(cron = "0 0 6,18 * * ?")
+    public void manageFakePlayers() {
+        // Example logic
+        List<Game> games = gameRepository.findGamesWithinRange(twentyFourHoursFromNow, oneWeekFromNow);
+        for (Game game : games) {
+            if (gameNeedsMorePlayers(game)) {
+                addFakePlayers(game);
+            }
+        }
+    }
+
+    @Scheduled(cron = "0 0 * * * ?") // Runs at the start of every hour
+    //@Scheduled(cron = "0 0/5 * * * ?")
+    //@Scheduled(cron = "0 0 6,18 * * ?")
+    public void removeFakePlayerFromGames() {
+        ZonedDateTime rightNow = ZonedDateTime.now(ZoneId.systemDefault());
+        ZonedDateTime nowPlus24Hours = rightNow.plusHours(24);
+        //        ZonedDateTime nowPlus24Hours = rightNow.plusHours(100); // remove this when done testing
+        List<Game> games = gameRepository.findGamesStartingInNext24HoursWithFakePlayers(rightNow, nowPlus24Hours);
+        for (Game game : games) {
+            // Find the first fake player in the game
+            Player fakePlayer = game.getPlayers().stream().filter(Player::getIsFake).findFirst().orElse(null);
+            if (fakePlayer != null) {
+                game.getPlayers().remove(fakePlayer); // Remove from game's collection of players
+                playerRepository.delete(fakePlayer); // Delete from database
+                // Optionally, save the game if needed depending on your JPA setup
+                gameRepository.save(game);
+            }
+        }
+    }
+
+    private boolean gameNeedsMorePlayers(Game game) {
+        int players = game.getPlayers().size();
+        int gameSize = game.getSize();
+        int targetSize = (int) Math.ceil(gameSize * 0.7);
+
+        return players < targetSize;
+    }
+
+    private void addFakePlayers(Game game) {
+        int currentPlayersCount = game.getPlayers().size();
+        int gameSize = game.getSize();
+        int targetSize = (int) Math.ceil(gameSize * 0.7);
+        Player player = new Player();
+
+        int fakePlayersNeeded = targetSize - currentPlayersCount;
+
+        for (int i = 0; i < fakePlayersNeeded; i++) {
+            Player fakePlayer = player.generateFakePlayer();
+            PlayerImage playerImage = saveImageToDatabaseAndReturnId();
+            fakePlayer.setPlayerImage(playerImage);
+            game.addPlayer(fakePlayer);
+            playerRepository.save(fakePlayer);
+        }
+        gameRepository.save(game);
     }
 
     /**

@@ -6,19 +6,25 @@ import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.matcris.footyfix.domain.Game;
 import org.matcris.footyfix.domain.Player;
+import org.matcris.footyfix.domain.PlayerImage;
 import org.matcris.footyfix.domain.Venue;
+import org.matcris.footyfix.repository.GameRepository;
+import org.matcris.footyfix.repository.PlayerImageRepository;
 import org.matcris.footyfix.repository.PlayerRepository;
 import org.matcris.footyfix.web.rest.errors.BadRequestAlertException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import tech.jhipster.web.util.HeaderUtil;
 import tech.jhipster.web.util.ResponseUtil;
 
@@ -38,15 +44,61 @@ public class PlayerResource {
     private String applicationName;
 
     private final PlayerRepository playerRepository;
+    private final GameRepository gameRepository;
 
     //    private final FirebaseMessaging firebaseMessaging;
 
     public PlayerResource(
-        PlayerRepository playerRepository
+        PlayerRepository playerRepository,
+        GameRepository gameRepository
         //        , FirebaseMessaging firebaseMessaging
     ) {
         this.playerRepository = playerRepository;
+        this.gameRepository = gameRepository;
         //        this.firebaseMessaging = firebaseMessaging;
+    }
+
+    @Transactional
+    public boolean addPlayerToGame(Long gameId, Player newPlayer) {
+        Game game = gameRepository.findById(gameId).orElseThrow(() -> new RuntimeException("Game not found"));
+
+        int currentTotalPlayers = game.getPlayers().size();
+        int gameSize = game.getSize();
+
+        // Check if the game is full but can replace a fake player with a real one
+        if (currentTotalPlayers >= gameSize - 1 && !newPlayer.getIsFake()) {
+            boolean replaced = replaceOneFakePlayer(game, newPlayer);
+            if (!replaced && currentTotalPlayers == gameSize - 1) {
+                // If no fake player was replaced but there's still room, add the player normally
+                game.getPlayers().add(newPlayer);
+                gameRepository.save(game);
+                return true;
+            }
+            return replaced;
+        } else if (currentTotalPlayers == gameSize - 1) {
+            // If there's room, add the player normally
+            game.getPlayers().add(newPlayer);
+            gameRepository.save(game);
+            return true;
+        }
+
+        // If the game is at capacity and no replacement occurred, return false
+        return false;
+    }
+
+    private boolean replaceOneFakePlayer(Game game, Player realPlayer) {
+        for (Player player : game.getPlayers()) {
+            if (player.getIsFake()) {
+                // Remove the fake player and add the real player
+                game.getPlayers().remove(player);
+                playerRepository.delete(player); // Remove fake player from the database
+
+                game.getPlayers().add(realPlayer); // Add the real player to the game
+                gameRepository.save(game);
+                return true; // Indicate that the replacement was successful
+            }
+        }
+        return false; // No fake player was found to replace
     }
 
     /**
@@ -145,6 +197,7 @@ public class PlayerResource {
                 }
                 if (player.getGames() != null && !player.getGames().isEmpty()) {
                     existingPlayer.addGame(player.getGame());
+                    addPlayerToGame(player.getGame().getId(), existingPlayer);
                 }
                 if (player.getPayments() != null && !player.getPayments().isEmpty()) {
                     existingPlayer.addPayment(player.getPayment());

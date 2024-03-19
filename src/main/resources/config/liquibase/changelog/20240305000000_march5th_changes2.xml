@@ -21,4 +21,24 @@
                                  referencedTableName="player" referencedColumnNames="id"
                                  onDelete="CASCADE"/>
     </changeSet>
+
+    <changeSet id="add-fake-player-bool" author="matei">
+        <addColumn tableName="player">
+            <column name="isFake" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="add-is_fake-player-bool" author="matei">
+        <addColumn tableName="player">
+            <column name="is_fake" type="BOOLEAN">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="remove-fake-player-bool" author="matei">
+        <dropColumn tableName="player" columnName="isFake"/>
+    </changeSet>
 </databaseChangeLog>

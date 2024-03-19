@@ -2,16 +2,27 @@ package org.matcris.footyfix.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.github.javafaker.Faker;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.security.SecureRandom;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.matcris.footyfix.domain.enumeration.Gender;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.Base64Utils;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * A Player.
@@ -32,7 +43,7 @@ public class Player implements Serializable {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "username", unique = true)
+    @Column(name = "username")
     private String username;
 
     @Column(name = "email", unique = true)
@@ -53,6 +64,9 @@ public class Player implements Serializable {
 
     @Column(name = "balance", precision = 10, scale = 2)
     private BigDecimal balance = BigDecimal.ZERO;
+
+    @Column(name = "is_fake")
+    private boolean isFake;
 
     @JsonIgnoreProperties(value = { "player" }, allowSetters = true)
     @OneToOne(fetch = FetchType.LAZY)
@@ -90,10 +104,83 @@ public class Player implements Serializable {
     @JsonIgnoreProperties(value = { "players" }, allowSetters = true)
     private Set<Venue> venues = new HashSet<>();
 
-    // jhipster-needle-entity-add-field - JHipster will add fields here
+    public String generateFakeUsername() {
+        String username;
+        Faker faker = new Faker();
+        SecureRandom random = new SecureRandom();
+        int randomInt = random.nextInt(2) + 1;
 
+        //        if (randomInt == 1) {
+        //            String uuid = UUID.randomUUID().toString();
+        //            username = "user_" + uuid.substring(0, 8);
+        //        }
+        //        else if (randomInt == 2) {
+        //            int length = 10;
+        //            String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        //
+        //            StringBuilder sb = new StringBuilder();
+        //            for (int i = 0; i < length; i++) {
+        //                sb.append(characters.charAt(random.nextInt(characters.length())));
+        //            }
+        //
+        //            username = sb.toString();
+        //        }
+        if (randomInt == 2) {
+            String base = faker.superhero().name().replaceAll("\\s+", ""); // Remove spaces
+            String uniqueSegment = UUID.randomUUID().toString().substring(0, 4); // Get a UUID segment
+
+            username = base + "_" + uniqueSegment;
+        } else {
+            username = faker.animal().name() + "_" + faker.color().name() + faker.number().randomDigitNotZero();
+        }
+
+        return username;
+    }
+
+    //    public String getRandomCityImage() {
+    //        final String url = "https://api.api-ninjas.com/v1/randomimage?category=city";
+    //
+    //        RestTemplate restTemplate = new RestTemplate();
+    //
+    //        HttpHeaders headers = new HttpHeaders();
+    //        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+    //        headers.set("X-Api-Key", "bbT1V2Ic3kanPcd3cf41zA==23X3WsTG0yTutohn"); // Replace with your actual API key
+    //
+    //        HttpEntity<String> entity = new HttpEntity<>(headers);
+    //
+    //        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+    //
+    //        return response.getBody(); // This returns the raw JSON response
+    //    }
+
+    public Player generateFakePlayer() {
+        Faker faker = new Faker();
+        String username = generateFakeUsername();
+        String name = faker.name().fullName();
+        String email = faker.internet().emailAddress();
+        String userId = UUID.randomUUID().toString();
+
+        Player player = new Player();
+        player.setUsername(username);
+        player.setName(name);
+        player.setEmail(email);
+        player.setFake(true);
+        player.id(userId);
+
+        return player;
+    }
+
+    // jhipster-needle-entity-add-field - JHipster will add fields here
     public BigDecimal getBalance() {
         return balance;
+    }
+
+    public boolean getIsFake() {
+        return isFake;
+    }
+
+    public void setFake(boolean fake) {
+        isFake = fake;
     }
 
     public void setBalance(BigDecimal balance) {
@@ -412,6 +499,7 @@ public class Player implements Serializable {
             ", gender='" + getGender() + "'" +
             ", phoneNumber='" + getPhoneNumber() + "'" +
             ", balance='" + getBalance() + "'" +
+            ", isFake='" + getIsFake() + "'" +
             "}";
     }
 }

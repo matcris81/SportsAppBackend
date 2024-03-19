@@ -47,8 +47,8 @@ public class Game implements Serializable {
     @Column(name = "sport_id")
     private Integer sportId;
 
-    @Column(name = "fake_players")
-    private Integer fakePlayers;
+    //    @Column(name = "fake_players")
+    //    private Integer fakePlayers;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties(value = { "playerImage", "organizedGames", "notifications", "payments", "games", "venues" }, allowSetters = true)
@@ -61,13 +61,13 @@ public class Game implements Serializable {
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
 
-    public void setFakePlayers(Integer fakePlayersCount) {
-        this.fakePlayers = fakePlayersCount;
-    }
-
-    public Integer getFakePlayers() {
-        return fakePlayers;
-    }
+    //    public void setFakePlayers(Integer fakePlayersCount) {
+    //        this.fakePlayers = fakePlayersCount;
+    //    }
+    //
+    //    public Integer getFakePlayers() {
+    //        return fakePlayers;
+    //    }
 
     public Long getId() {
         return this.id;
@@ -235,7 +235,7 @@ public class Game implements Serializable {
             ", venueId=" + getVenueId() +
             ", sportId=" + getSportId() +
             ", sportId=" + getSportId() +
-            ", fakePlayers=" + getFakePlayers() +
+//            ", fakePlayers=" + getFakePlayers() +
             "}";
     }
 }

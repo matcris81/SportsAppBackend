@@ -22,23 +22,35 @@
                                  onDelete="CASCADE"/>
     </changeSet>
 
-    <changeSet id="add-fake-player-bool" author="matei">
-        <addColumn tableName="player">
-            <column name="isFake" type="BOOLEAN">
-                <constraints nullable="false"/>
-            </column>
-        </addColumn>
+    <changeSet id="remove-fake-players-column" author="yourName">
+        <dropColumn tableName="game" columnName="fake_players"/>
     </changeSet>
 
-    <changeSet id="add-is_fake-player-bool" author="matei">
-        <addColumn tableName="player">
-            <column name="is_fake" type="BOOLEAN">
-                <constraints nullable="false"/>
-            </column>
-        </addColumn>
-    </changeSet>
+    <!--    <changeSet id="add-fake-player-bool" author="matei">-->
+<!--        <addColumn tableName="player">-->
+<!--            <column name="isFake" type="BOOLEAN">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
+<!--        </addColumn>-->
+<!--    </changeSet>-->
 
-    <changeSet id="remove-fake-player-bool" author="matei">
-        <dropColumn tableName="player" columnName="isFake"/>
-    </changeSet>
+<!--    <changeSet id="add-fake-player-bool-with-default" author="matei">-->
+<!--        <addColumn tableName="player">-->
+<!--            <column name="isFake" type="BOOLEAN" defaultValueBoolean="false">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
+<!--        </addColumn>-->
+<!--    </changeSet>-->
+
+<!--    <changeSet id="add-is_fake-player-bool-with-default" author="matei">-->
+<!--        <addColumn tableName="player">-->
+<!--            <column name="is_fake" type="BOOLEAN" defaultValueBoolean="false">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
+<!--        </addColumn>-->
+<!--    </changeSet>-->
+
+<!--    <changeSet id="remove-fake-player-bool" author="matei">-->
+<!--        <dropColumn tableName="player" columnName="isFake"/>-->
+<!--    </changeSet>-->
 </databaseChangeLog>

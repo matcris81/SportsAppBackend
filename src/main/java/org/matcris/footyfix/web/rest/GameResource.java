@@ -139,6 +139,36 @@ public class GameResource {
         }
     }
 
+    @Scheduled(cron = "0 0 * * * *")
+    public void deletePastGames() {
+        log.debug("Scheduled task to delete past games started");
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.systemDefault());
+        List<Game> pastGames = gameRepository.findAllByGameDateBefore(now);
+
+        if (!pastGames.isEmpty()) {
+            for (Game game : pastGames) {
+                // Before deleting the game, dissociate or delete all related players
+                dissociateOrDeletePlayers(game);
+
+                // Now safe to delete the game
+                gameRepository.delete(game);
+                log.debug("Deleted past game with ID: {}", game.getId());
+            }
+        } else {
+            log.debug("No past games to delete");
+        }
+    }
+
+    private void dissociateOrDeletePlayers(Game game) {
+        List<Player> players = playerRepository.findPlayersByGameId(game.getId());
+        for (Player player : players) {
+            player.getGames().remove(game);
+            playerRepository.save(player);
+        }
+        game.getPlayers().clear();
+        gameRepository.save(game);
+    }
+
     private boolean gameNeedsMorePlayers(Game game) {
         int players = game.getPlayers().size();
         int gameSize = game.getSize();
@@ -326,6 +356,13 @@ public class GameResource {
     public ResponseEntity<List<Game>> getGamesByDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         log.debug("REST request to get Games by date : {}", date);
         List<Game> games = gameRepository.findAllByGameDateOrdered(date);
+        return ResponseEntity.ok().body(games);
+    }
+
+    @GetMapping("/by-date-time-asc")
+    public ResponseEntity<List<Game>> getNowGames(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        log.debug("REST request to get Games by date : {}", date);
+        List<Game> games = gameRepository.findTodayUpcomingGames();
         return ResponseEntity.ok().body(games);
     }
 

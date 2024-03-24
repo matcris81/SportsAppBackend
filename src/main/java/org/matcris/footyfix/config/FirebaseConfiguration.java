@@ -39,9 +39,12 @@ public class FirebaseConfiguration {
 
     @Bean
     FirebaseApp firebaseApp(GoogleCredentials credentials) {
-        FirebaseOptions options = FirebaseOptions.builder().setCredentials(credentials).build();
-
-        return FirebaseApp.initializeApp(options);
+        if (FirebaseApp.getApps().isEmpty()) {
+            FirebaseOptions options = FirebaseOptions.builder().setCredentials(credentials).build();
+            return FirebaseApp.initializeApp(options);
+        } else {
+            return FirebaseApp.getInstance();
+        }
     }
 
     @Bean

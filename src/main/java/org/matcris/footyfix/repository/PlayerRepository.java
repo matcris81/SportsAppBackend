@@ -50,4 +50,7 @@ public interface PlayerRepository extends PlayerRepositoryWithBagRelationships, 
     @Transactional
     @Query("UPDATE Player p SET p.balance = p.balance + :amount WHERE p.id = :playerId")
     int addPlayerBalance(@Param("playerId") String playerId, @Param("amount") BigDecimal amount);
+
+    @Query("SELECT p FROM Player p JOIN p.games g WHERE g.id = :gameId")
+    List<Player> findPlayersByGameId(@Param("gameId") Long gameId);
 }

@@ -20,6 +20,11 @@ public interface GameRepository extends JpaRepository<Game, Long> {
     @Query("SELECT g FROM Game g WHERE FUNCTION('DATE', g.gameDate) = :date ORDER BY g.gameDate ASC")
     List<Game> findAllByGameDateOrdered(@Param("date") LocalDate date);
 
+    @Query(
+        "SELECT g FROM Game g WHERE FUNCTION('DATE', g.gameDate) = CURRENT_DATE AND g.gameDate > CURRENT_TIMESTAMP ORDER BY g.gameDate ASC"
+    )
+    List<Game> findTodayUpcomingGames();
+
     @Query("SELECT g FROM Game g WHERE g.venueId = :venueId ORDER BY g.gameDate ASC")
     List<Game> findGamesByVenueOrdered(@Param("venueId") Integer venueId);
 
@@ -43,6 +48,8 @@ public interface GameRepository extends JpaRepository<Game, Long> {
 
     @Query("SELECT DISTINCT g FROM Game g JOIN g.players p WHERE g.gameDate > :start AND g.gameDate <= :end AND p.isFake = TRUE")
     List<Game> findGamesStartingInNext24HoursWithFakePlayers(@Param("start") ZonedDateTime start, @Param("end") ZonedDateTime end);
+
+    List<Game> findAllByGameDateBefore(ZonedDateTime dateTime);
     //}
 
     //    @Query("SELECT g FROM Game g WHERE g.gameDate BETWEEN :start AND :end ORDER BY g.gameDate ASC")

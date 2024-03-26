@@ -12,6 +12,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import org.matcris.footyfix.domain.Game;
 import org.matcris.footyfix.domain.Player;
 import org.matcris.footyfix.domain.PlayerImage;
@@ -106,29 +107,42 @@ public class GameResource {
         return response.getBody();
     }
 
-    //    @Scheduled(cron = "0 0 * * * *") // Run at the start of every hour
-    //@Scheduled(cron = "0 0/5 * * * ?") // Runs every 5 minutes
-    @Scheduled(cron = "0 0 6,18 * * ?")
     public void manageFakePlayers() {
         // Example logic
         List<Game> games = gameRepository.findGamesWithinRange(twentyFourHoursFromNow, oneWeekFromNow);
         for (Game game : games) {
             if (gameNeedsMorePlayers(game)) {
-                addFakePlayers(game);
+                addFakePlayerIfNeeded(game);
             }
         }
     }
 
-    @Scheduled(cron = "0 0 * * * ?") // Runs at the start of every hour
-    //@Scheduled(cron = "0 0/5 * * * ?")
+    //     @Scheduled(cron = "0 0/5 * * * ?") // Runs every 5 minutes
+    //    @Scheduled(cron = "0 0 6,18 * * ?")
+    @Scheduled(cron = "0 0 0/2 * * ?") // Runs at the start of every two hours
+    public void scheduleAdditionOfFakePlayer() {
+        // Delay in milliseconds (up to 7140 seconds for up to 1 hour and 59 minutes)
+        long delay = ThreadLocalRandom.current().nextInt(7140) * 1000L;
+
+        Timer timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                manageFakePlayers();
+            }
+        };
+
+        timer.schedule(task, delay);
+    }
+
+    //    @Scheduled(cron = "0 0 * * * ?") // Runs at the start of every hour
+    //    @Scheduled(cron = "0 0/5 * * * ?")
     //@Scheduled(cron = "0 0 6,18 * * ?")
     public void removeFakePlayerFromGames() {
         ZonedDateTime rightNow = ZonedDateTime.now(ZoneId.systemDefault());
         ZonedDateTime nowPlus24Hours = rightNow.plusHours(24);
-        //        ZonedDateTime nowPlus24Hours = rightNow.plusHours(100); // remove this when done testing
         List<Game> games = gameRepository.findGamesStartingInNext24HoursWithFakePlayers(rightNow, nowPlus24Hours);
         for (Game game : games) {
-            // Find the first fake player in the game
             Player fakePlayer = game.getPlayers().stream().filter(Player::getIsFake).findFirst().orElse(null);
             if (fakePlayer != null) {
                 game.getPlayers().remove(fakePlayer); // Remove from game's collection of players
@@ -137,6 +151,22 @@ public class GameResource {
                 gameRepository.save(game);
             }
         }
+    }
+
+    @Scheduled(cron = "0 0 * * * ?") // Runs at the start of every hour
+    public void scheduleRemovalOfFakePlayer() {
+        // Delay in milliseconds (up to 3540 seconds for up to 59 minutes)
+        long delay = ThreadLocalRandom.current().nextInt(3540) * 1000L;
+
+        Timer timer = new Timer();
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+                removeFakePlayerFromGames();
+            }
+        };
+
+        timer.schedule(task, delay);
     }
 
     @Scheduled(cron = "0 0 * * * *")
@@ -177,22 +207,24 @@ public class GameResource {
         return players < targetSize;
     }
 
-    private void addFakePlayers(Game game) {
+    private void addFakePlayerIfNeeded(Game game) {
         int currentPlayersCount = game.getPlayers().size();
         int gameSize = game.getSize();
         int targetSize = (int) Math.ceil(gameSize * 0.7);
-        Player player = new Player();
 
-        int fakePlayersNeeded = targetSize - currentPlayersCount;
-
-        for (int i = 0; i < fakePlayersNeeded; i++) {
+        // Check if adding one player is needed
+        if (currentPlayersCount < targetSize) {
+            // Add only one fake player
+            Player player = new Player();
             Player fakePlayer = player.generateFakePlayer();
             PlayerImage playerImage = saveImageToDatabaseAndReturnId();
             fakePlayer.setPlayerImage(playerImage);
             game.addPlayer(fakePlayer);
             playerRepository.save(fakePlayer);
+
+            // Save the game after adding the player
+            gameRepository.save(game);
         }
-        gameRepository.save(game);
     }
 
     /**

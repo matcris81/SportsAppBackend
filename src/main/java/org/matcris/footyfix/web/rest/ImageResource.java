@@ -64,5 +64,4 @@ public class ImageResource {
         Optional<Images> images = imageRepository.findById(imageId);
         return ResponseUtil.wrapOrNotFound(images);
     }
-    // Additional methods for update, delete, etc., can be implemented here following the pattern above.
 }
